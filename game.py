@@ -2,9 +2,8 @@
 import time
 
 # Variables to store player data
-agent_name = ""
 money = 0
-monthly_users = 0
+daily_users = 0
 player_experience = 0
 processing_power = 0
 
@@ -19,7 +18,7 @@ def display_stats():
 
 # Functions + stat calculations
 def get_player_name():
-    player_name = input("Welcome to GPT-incremental! Please enter your name: ")
+    player_name = input("Welcome to GPT-incremental! Please enter a name for your AI agent: ")
     time.sleep(1)
     print(f"Hello, {player_name}!")
 
@@ -35,7 +34,7 @@ def tutorial():
         time.sleep(2)
         print("There are several stats that you, as a player are required to understand:")
         time.sleep(2)
-        print("Money: Money is the primary currency of the ")
+        print("Money: Money is the primary currency of the game and can be used to purchase upgrades. Money is obtained based on your daily users")
 
             
 
