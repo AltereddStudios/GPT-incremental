@@ -11,7 +11,7 @@ menu_option = 1
 # Stats output 
 def display_stats():
     print("================================")
-    print(ai_name)
+    print("GPT-Incremental -", ai_name)
     print("Money: $", money)
     print("Daily users: ", daily_users)
     print("Processing Power: ", processing_power)
@@ -22,9 +22,8 @@ def display_menu():
     print("Menu Options:")
     print()
     print("1. Upgrades")
-    print("2. Research")
-    print("3. Save to file")
-    print("4. Exit")
+    print("2. Import Save")
+    print("3. Save code + Exit")
     print()
     menu_choice = input("Select a menu option: ")
     return menu_choice
@@ -35,9 +34,9 @@ def get_name():
     return name
 
 def tutorial(wait_time):
-    time.sleep(wait_time/2.25)
+    time.sleep(wait_time/2.5)
     print()
-    start_tutorial = input("Would you like to start the tutorial [y/n] (default is y): ").lower()
+    start_tutorial = input("Would you like to start the tutorial [y/n] (default is y): ").strip().lower()
 
     if start_tutorial != "n":
         print()
@@ -54,6 +53,7 @@ def tutorial(wait_time):
         print("Daily users: The amount of individuals using your AI services. Daily users directly impact the amount of money generated")
         time.sleep(wait_time)
         print("Processing power: The strength of your computers running your AI services. A better (higher) processing power allows for stronger intelligence models")
+        time.sleep(wait_time/2)
 
     else:
         print()
@@ -67,16 +67,21 @@ def clear():
 
 # Game loop
 ai_name = get_name()
+print("If you would like to load a save, go to menu 2 after the tutorial")
+
 tutorial(3)
-time.sleep(1.5)
 
 while menu_option != 2:
     display_stats()
     menu = display_menu()
     if menu == "1":
         menu_option = 1
-    if menu == "2":
+    elif menu == "2":
         menu_option = 2
+    elif menu == "3":
+            menu_option = 3
+    
+    
 
 
 
