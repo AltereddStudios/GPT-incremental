@@ -3,9 +3,10 @@ import time
 import os
 
 # Variables to store player data
-money = 0
+money = 100
 daily_users = 0
 processing_power = 0
+
 menu_option = 1
 
 # Stats output 
@@ -65,12 +66,23 @@ def clear():
     else:
         os.system("clear")
 
+def purchase_upgrade(upgrade_cost):
+    global money
+    
+    if money >= upgrade_cost:
+        money = money - upgrade_cost
+        print("purchase successful!")
+    else:
+        print("insufficient funds!")
+
+
 # Game loop
 ai_name = get_name()
 print("If you would like to load a save, go to menu 2 after the tutorial")
 
 tutorial(3)
 
+"""
 while menu_option != 2:
     display_stats()
     menu = display_menu()
@@ -80,8 +92,9 @@ while menu_option != 2:
         menu_option = 2
     elif menu == "3":
             menu_option = 3
-    
-    
+"""
 
-
-
+money = 150
+purchase_upgrade(100)
+purchase_upgrade(50)
+purchase_upgrade(100)
