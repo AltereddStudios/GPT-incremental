@@ -9,6 +9,7 @@ processing_power = 0
 # Stats output 
 def display_stats():
     print("================================")
+    print(agent_name)
     print("Money: $", money)
     print("Daily users: ", daily_users)
     print("Processing Power: ", processing_power)
@@ -19,15 +20,13 @@ def get_name():
     name = input("Welcome to GPT-incremental! Please enter a name for your AI agent: ")
     return name
 
-player_name = get_name()
 
 def tutorial(wait_time):
     time.sleep(wait_time/2.25)
     print()
-    start_tutorial = input("Would you like to start the tutorial [y/n] (default is y): ")
-    lowercase_start_tutorial = start_tutorial.lower()
+    start_tutorial = input("Would you like to start the tutorial [y/n] (default is y): ").lower()
 
-    if lowercase_start_tutorial != "n":
+    if start_tutorial != "n":
         print()
         time.sleep(wait_time/1.5)
         print("GPT-incremental is a command-line incremental game revolving around building your own AI empire")
@@ -46,6 +45,8 @@ def tutorial(wait_time):
 
 
 # Game loop
-get_name()
+agent_name = get_name()
 tutorial(3)
+
+display_stats()
 
