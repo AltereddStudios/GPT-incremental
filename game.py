@@ -7,7 +7,6 @@ daily_users = 0
 player_experience = 0
 processing_power = 0
 
-
 # Stats output 
 def display_stats():
     print("================================")
@@ -17,28 +16,34 @@ def display_stats():
     print("================================")
 
 # Functions + stat calculations
-def get_player_name():
-    player_name = input("Welcome to GPT-incremental! Please enter a name for your AI agent: ")
-    time.sleep(1)
-    print(f"Hello, {player_name}!")
+def get_name():
+    name = input("Welcome to GPT-incremental! Please enter a name for your AI agent: ")
+    return name
 
-def tutorial():
+player_name = get_name()
+
+def tutorial(wait_time):
+    time.sleep(wait_time/2.25)
     print()
     start_tutorial = input("Would you like to start the tutorial [y/n] (default is y): ")
     if start_tutorial != "n":
         print()
-        time.sleep(0.25)
+        time.sleep(wait_time/1.5)
         print("GPT-incremental is a command-line incremental game revolving around building your own AI empire")
-        time.sleep(2)
+        time.sleep(wait_time)
         print(f"Your goal is to make as much money as possible through purchasing upgrades that boost your AI's efficiency")
-        time.sleep(2)
+        time.sleep(wait_time)
         print("There are several stats that you, as a player are required to understand:")
-        time.sleep(2)
-        print("Money: Money is the primary currency of the game and can be used to purchase upgrades. Money is obtained based on your daily users")
-
-            
+        time.sleep(wait_time)
+        print()
+        print("Money: The primary currency of the game and can be used to purchase upgrades.")
+        time.sleep(wait_time)
+        print("Daily users: The amount of individuals using your AI services. Daily users directly impact the amount of money generated")
+        time.sleep(wait_time)
+        print("Processing power: The strength of your computers running your AI services. A better (higher) processing power allows for stronger intelligence models")
+        time.sleep(wait_time)
 
 # Game loop
-get_player_name()
-tutorial()
+get_name()
+tutorial(3)
 
