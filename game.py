@@ -39,7 +39,8 @@ def display_menu():
 
 # Starting functions
 def get_name():
-    name = input("Welcome to GPT-incremental! Please enter a name for your AI agent: ")
+    name = input("Welcome to GPT-incremental! Please enter a name (max 20 chars) for your AI agent: ")
+    name = name[:20]
     return name
 
 def tutorial(wait_time):
@@ -81,11 +82,13 @@ def purchase_upgrade(upgrade_cost):
         print()
         print("Purchase successful!")
         time.sleep(1)
+        print()
         return True
     else:
         print()
         print("Insufficient funds!")
         time.sleep(1)
+        print()
         return False
 
 def display_upgrades():
@@ -116,12 +119,15 @@ while menu_option != 3:
             if result: # run if result is true (result is stored as a bool)
                 processing_power = processing_power + 1
                 processing_power_cost = round(processing_power_cost * cost_multiplier)
+                processing_power_level = processing_power_level + 1
+
         if upgrade_choice == "2":
                     result = purchase_upgrade(daily_users_cost)
                     if result: # run if result is true (result is stored as a bool)
                         daily_users = daily_users + 1
                         daily_users_cost = round(daily_users_cost * cost_multiplier)
-    
+                        daily_users_level = daily_users_level + 1
+
     elif menu == "2":
         menu_option = 2
 
