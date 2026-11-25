@@ -23,12 +23,23 @@ money_lock = threading.Lock()
 
 # Display functions
 def display_stats():
+    with money_lock:
+        current_money = money
+        current_daily_users = daily_users
+        current_processing_power = processing_power
+
     print("================================")
     print("GPT-Incremental -", ai_name)
-    print("Money: $", money)
-    print("Daily users: ", daily_users)
-    print("Processing Power: ", processing_power)
+    print("Money: $", current_money)
+    print("Daily users: ", current_daily_users)
+    print("Processing Power: ", current_processing_power)
     print("================================")
+
+def display_update():
+    while True:
+        clear()
+        display_stats()
+        time.sleep(0.1)
 
 def display_menu():
     print()
@@ -109,7 +120,7 @@ def money_update():
             time.sleep(delay)
 
         with money_lock:
-            money = round(money + math.log(1 + (daily_users*processing_power)/2, 1.1))
+            money = round(money + math.log(1 + (daily_users*processing_power)/20, 1.1))
 
         next_update += interval
 
@@ -122,6 +133,10 @@ tutorial(3)
 # Money thread
 money_thread = threading.Thread(target=money_update, daemon=True)
 money_thread.start()
+
+# Display thread
+display_thread = threading.Thread(target=display_update, daemon=True)
+display_thread.start()
 
 # Game loop
 while menu_option != 3:
