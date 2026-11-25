@@ -2,14 +2,22 @@
 import time
 import os
 
-# Variables to store player data
+# Variables
 money = 100
 daily_users = 0
 processing_power = 0
 
+daily_users_cost = 100 # initial cost
+processing_power_cost = 50 # initial cost
+
+daily_users_level = 0
+processing_power_level = 0
+
+cost_multiplier = 1.3
+
 menu_option = 0
 
-# Stats output 
+# Display functions
 def display_stats():
     print("================================")
     print("GPT-Incremental -", ai_name)
@@ -18,7 +26,6 @@ def display_stats():
     print("Processing Power: ", processing_power)
     print("================================")
 
-# Menu output
 def display_menu():
     print()
     print("Menu Options:")
@@ -54,7 +61,7 @@ def tutorial(wait_time):
         print("Daily users: The amount of individuals using your AI services. Daily users directly impact the amount of money generated")
         time.sleep(wait_time)
         print("Processing power: The strength of your computers running your AI services. A better (higher) processing power allows for stronger intelligence models")
-        time.sleep(wait_time/2)
+        time.sleep(wait_time+3)
 
     else:
         print()
@@ -71,30 +78,30 @@ def purchase_upgrade(upgrade_cost):
     
     if money >= upgrade_cost:
         money = money - upgrade_cost
-        print("purchase successful!")
+        print()
+        print("Purchase successful!")
+        time.sleep(1)
         return True
     else:
-        print("insufficient funds!")
+        print()
+        print("Insufficient funds!")
+        time.sleep(1)
         return False
 
 def display_upgrades():
     print()
-    print("1. Better datacenters (increase processing power) - $50")
-    print("2. Better advertising (increase daily users) - $100")
+    print("1. Better datacenters (increase processing power) - $",processing_power_cost)
+    print("2. Better advertising (increase daily users) - $", daily_users_cost)
     print("3. Exit upgrades menu")
+    print()
     upgrade_choice = input("Select an option: ").strip()
     return upgrade_choice
-        
-
 
 # Game loop
 ai_name = get_name()
 print("If you would like to load a save, go to menu 2 after the tutorial")
 
 tutorial(3)
-
-
-
 
 while menu_option != 3:
     display_stats()
@@ -105,13 +112,23 @@ while menu_option != 3:
         display_stats()
         upgrade_choice = display_upgrades()
         if upgrade_choice == "1":
-            result = purchase_upgrade(50)
+            result = purchase_upgrade(processing_power_cost)
             if result: # run if result is true (result is stored as a bool)
                 processing_power = processing_power + 1
-
-
+                processing_power_cost = round(processing_power_cost * cost_multiplier)
+        if upgrade_choice == "2":
+                    result = purchase_upgrade(daily_users_cost)
+                    if result: # run if result is true (result is stored as a bool)
+                        daily_users = daily_users + 1
+                        daily_users_cost = round(daily_users_cost * cost_multiplier)
+    
     elif menu == "2":
         menu_option = 2
+
     elif menu == "3":
-            menu_option = 3
+        # add save code output before adjusting menu option as it will end game loop
+        menu_option = 3
+
+    else:
+        clear() # clears terminal if outputs dont match the integers
 
