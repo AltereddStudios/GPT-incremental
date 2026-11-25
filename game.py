@@ -7,7 +7,7 @@ money = 100
 daily_users = 0
 processing_power = 0
 
-menu_option = 1
+menu_option = 0
 
 # Stats output 
 def display_stats():
@@ -20,6 +20,7 @@ def display_stats():
 
 # Menu output
 def display_menu():
+    print()
     print("Menu Options:")
     print()
     print("1. Upgrades")
@@ -35,7 +36,6 @@ def get_name():
     return name
 
 def tutorial(wait_time):
-    time.sleep(wait_time/2.5)
     print()
     start_tutorial = input("Would you like to start the tutorial [y/n] (default is y): ").strip().lower()
 
@@ -72,8 +72,19 @@ def purchase_upgrade(upgrade_cost):
     if money >= upgrade_cost:
         money = money - upgrade_cost
         print("purchase successful!")
+        return True
     else:
         print("insufficient funds!")
+        return False
+
+def display_upgrades():
+    print()
+    print("1. Better datacenters (increase processing power) - $50")
+    print("2. Better advertising (increase daily users) - $100")
+    print("3. Exit upgrades menu")
+    upgrade_choice = input("Select an option: ").strip()
+    return upgrade_choice
+        
 
 
 # Game loop
@@ -82,19 +93,25 @@ print("If you would like to load a save, go to menu 2 after the tutorial")
 
 tutorial(3)
 
-"""
-while menu_option != 2:
+
+
+
+while menu_option != 3:
     display_stats()
     menu = display_menu()
     if menu == "1":
         menu_option = 1
+        clear()
+        display_stats()
+        upgrade_choice = display_upgrades()
+        if upgrade_choice == "1":
+            result = purchase_upgrade(50)
+            if result: # run if result is true (result is stored as a bool)
+                processing_power = processing_power + 1
+
+
     elif menu == "2":
         menu_option = 2
     elif menu == "3":
             menu_option = 3
-"""
 
-money = 150
-purchase_upgrade(100)
-purchase_upgrade(50)
-purchase_upgrade(100)
