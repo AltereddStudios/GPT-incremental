@@ -52,9 +52,7 @@ def money_update():
 
         with money_lock:
             income = (
-                0.15
-                * (daily_users ** 0.75)
-                * (processing_power ** 0.85)
+                0.25 * (daily_users ** 0.75) * (processing_power ** 0.85)
             )
 
             money += income * interval
@@ -140,6 +138,10 @@ def get_display():
         current_users_cost = daily_users_cost
         current_power_cost = processing_power_cost
 
+        current_income = (
+            0.25 * (daily_users ** 0.75) * (processing_power ** 0.85)
+        )
+
     if current_screen == "main":
 
         return FormattedText([
@@ -149,6 +151,8 @@ def get_display():
             ("", "================================\n\n"),
 
             ("fg:green bold", f"Money: ${current_money:.2f}\n"),
+            ("", f"Income:  ${current_income:.2f}/second\n\n"),
+
             ("", f"Daily users: {current_users}\n"),
             ("", f"Processing power: {current_power}\n\n"),
 
@@ -168,7 +172,9 @@ def get_display():
             ("", "          UPGRADES\n"),
             ("", "================================\n\n"),
 
-            ("fg:green bold", f"Money: ${current_money:.2f}\n\n"),
+            ("fg:green bold", f"Money: ${current_money:.2f}\n"),
+            ("", f"Income: ${current_income:.2f}/second\n\n"),
+
             ("", f"Daily users: {current_users}\n"),
             ("", f"Processing power: {current_power}\n\n"),
 
