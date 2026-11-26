@@ -1,8 +1,9 @@
 # imports
-import math
 import os
 import threading
 import time
+
+from prompt_toolkit import PromptSession
 
 # Variables
 money = 100
@@ -19,6 +20,9 @@ cost_multiplier = 1.3
 
 menu_option = 0
 
+session = PromptSession()
+running = True
+
 money_lock = threading.Lock()
 
 # Display functions
@@ -30,16 +34,10 @@ def display_stats():
 
     print("================================")
     print("GPT-Incremental -", ai_name)
-    print("Money: $", current_money)
+    print("Money: $", round(current_money, 2))
     print("Daily users: ", current_daily_users)
     print("Processing Power: ", current_processing_power)
     print("================================")
-
-def display_update():
-    while True:
-        clear()
-        display_stats()
-        time.sleep(0.1)
 
 def display_menu():
     print()
@@ -49,18 +47,18 @@ def display_menu():
     print("2. Import Save")
     print("3. Save code + Exit")
     print()
-    menu_choice = input("Select a menu option: ")
+    menu_choice = session.prompt("Select a menu option: ")
     return menu_choice
 
 # Starting functions
 def get_name():
-    name = input("Welcome to GPT-incremental! Please enter a name (max 20 chars) for your AI agent: ")
+    name = session.prompt("Welcome to GPT-incremental! Please enter a name (max 20 chars) for your AI agent: ")
     name = name[:20]
     return name
 
 def tutorial(wait_time):
     print()
-    start_tutorial = input("Would you like to start the tutorial [y/n] (default is y): ").strip().lower()
+    start_tutorial = session.prompt("Would you like to start the tutorial [y/n] (default is y): ").strip().lower()
 
     if start_tutorial != "n":
         print()
@@ -81,6 +79,9 @@ def tutorial(wait_time):
 
     else:
         print()
+
+# Save functions
+
 
 # Game functions
 def clear():
@@ -104,8 +105,67 @@ def display_upgrades():
     print("2. Better advertising (increase daily users) - $", daily_users_cost)
     print("3. Exit upgrades menu")
     print()
-    upgrade_choice = input("Select an option: ").strip()
+    upgrade_choice = session.prompt("Select an option: ").strip()
     return upgrade_choice
+
+def upgrade_menu():
+    global processing_power, processing_power_level, processing_power_cost
+    global daily_users, daily_users_level, daily_users_cost
+    
+    while True:
+        clear()
+        display_stats()
+
+        upgrade_choice = display_upgrades()
+
+        if upgrade_choice == "1":
+            with money_lock:
+                result = purchase_upgrade(processing_power_cost)
+                            
+                if result: # run if result is true (result is stored as a bool)
+                    processing_power += 1
+                    processing_power_level += 1
+                    processing_power_cost = round(processing_power_cost * cost_multiplier)
+                        
+                if result:
+                    print()
+                    print("Purchase successful!")
+                    print()
+                        
+                else:
+                    print()
+                    print("Insufficient funds!")
+                    print()
+            
+            time.sleep(1)
+
+        elif upgrade_choice == "2":
+            with money_lock:
+                result = purchase_upgrade(daily_users_cost)
+                            
+                if result: # run if result is true (result is stored as a bool)
+                    daily_users += 1
+                    daily_users_level += 1
+                    daily_users_cost = round(daily_users_cost * cost_multiplier)
+            
+                if result:
+                    print()
+                    print("Purchase successful!")
+                    print()
+            
+                else:
+                    print()
+                    print("Insufficient funds!")
+                    print()
+            
+            time.sleep(1)
+
+        elif upgrade_choice == "3":
+            break
+
+        else:
+            print("Invalid option!")
+            time.sleep(1)
 
 def money_update():
     global money
@@ -113,14 +173,18 @@ def money_update():
     interval = 0.5
     next_update = time.monotonic() + interval
 
-    while True:
+    while running:
         delay = next_update - time.monotonic()
 
         if delay > 0:
             time.sleep(delay)
+            
+        if not running:
+            break
 
         with money_lock:
-            money = round(money + math.log(1 + (daily_users*processing_power)/20, 1.1))
+            income = 0.15 * (daily_users ** 0.75) * (processing_power ** 0.85)
+            money += income * interval
 
         next_update += interval
 
@@ -134,62 +198,12 @@ tutorial(3)
 money_thread = threading.Thread(target=money_update, daemon=True)
 money_thread.start()
 
-# Display thread
-display_thread = threading.Thread(target=display_update, daemon=True)
-display_thread.start()
-
 # Game loop
 while menu_option != 3:
     display_stats()
     menu = display_menu()
     if menu == "1":
-        menu_option = 1
-
-        clear()
-        display_stats()
-        upgrade_choice = display_upgrades()
-
-        if upgrade_choice == "1":
-            with money_lock:
-                result = purchase_upgrade(processing_power_cost)
-                
-                if result: # run if result is true (result is stored as a bool)
-                    processing_power += 1
-                    processing_power_level += 1
-                    processing_power_cost = round(processing_power_cost * cost_multiplier)
-            
-            if result:
-                print()
-                print("Purchase successful!")
-                print()
-            
-            else:
-                print()
-                print("Insufficient funds!")
-                print()
-
-            time.sleep(1)
-
-        if upgrade_choice == "2":
-            with money_lock:
-                result = purchase_upgrade(daily_users_cost)
-                
-                if result: # run if result is true (result is stored as a bool)
-                    daily_users += 1
-                    daily_users_level += 1
-                    daily_users_cost = round(daily_users_cost * cost_multiplier)
-
-            if result:
-                print()
-                print("Purchase successful!")
-                print()
-
-            else:
-                print()
-                print("Insufficient funds!")
-                print()
-
-            time.sleep(1)
+        upgrade_menu()
 
     elif menu == "2":
         menu_option = 2
@@ -197,6 +211,8 @@ while menu_option != 3:
     elif menu == "3":
         # add save code output before adjusting menu option as it will end game loop
         menu_option = 3
+        running = False
+        money_thread.join()
 
     else:
         clear() # clears terminal if outputs dont match the integers
