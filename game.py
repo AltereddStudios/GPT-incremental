@@ -81,7 +81,17 @@ def tutorial(wait_time):
         print()
 
 # Save functions
-
+def get_save_data():
+    data = {
+        "ai_name": ai_name,
+        "money": money,
+        "daily_users": daily_users,
+        "processing_power": processing_power,
+        "daily_users_level": daily_users_level,
+        "processing_power_level": processing_power_level,
+        "daily_users_cost": daily_users_cost,
+        "processing_power_cost": processing_power_cost
+    }
 
 # Game functions
 def clear():
