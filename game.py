@@ -2,6 +2,7 @@
 import os
 import threading
 import time
+import json
 
 from prompt_toolkit import PromptSession
 
@@ -82,16 +83,24 @@ def tutorial(wait_time):
 
 # Save functions
 def get_save_data():
-    data = {
-        "ai_name": ai_name,
-        "money": money,
-        "daily_users": daily_users,
-        "processing_power": processing_power,
-        "daily_users_level": daily_users_level,
-        "processing_power_level": processing_power_level,
-        "daily_users_cost": daily_users_cost,
-        "processing_power_cost": processing_power_cost
-    }
+    with money_lock:
+        data = {
+            "ai_name": ai_name,
+            "money": money,
+            "daily_users": daily_users,
+            "processing_power": processing_power,
+            "daily_users_level": daily_users_level,
+            "processing_power_level": processing_power_level,
+            "daily_users_cost": daily_users_cost,
+            "processing_power_cost": processing_power_cost
+        }
+    return data
+
+def save_game():
+    save = get_save_data()
+
+    with open("save.json", "w", encoding="utf-8") as file:
+        json.dump(save, file, indent=4)
 
 # Game functions
 def clear():
@@ -220,9 +229,10 @@ while menu_option != 3:
 
     elif menu == "3":
         # add save code output before adjusting menu option as it will end game loop
-        menu_option = 3
         running = False
         money_thread.join()
+        save_game()
+        menu_option = 3
 
     else:
         clear() # clears terminal if outputs dont match the integers
