@@ -15,8 +15,9 @@ const mobileMessage = document.getElementById("mobile-message");
 if (isMobile) {
     terminalContainer.style.display = "none";
     mobileMessage.style.display = "flex";
-} else {
+} 
 
+else {
     const terminal = new Terminal({
         cursorBlink: true,
         cursorStyle: "block",
@@ -32,22 +33,6 @@ if (isMobile) {
             selectionBackground: "#585b70",
 
             black: "#45475a",
-            red: "#f38ba8",
-            green: "#a6e3a1",
-            yellow: "#f9e2af",
-            blue: "#89b4fa",
-            magenta: "#f5c2e7",
-            cyan: "#94e2d5",
-            white: "#bac2de",
-
-            brightBlack: "#585b70",
-            brightRed: "#f38ba8",
-            brightGreen: "#a6e3a1",
-            brightYellow: "#f9e2af",
-            brightBlue: "#89b4fa",
-            brightMagenta: "#f5c2e7",
-            brightCyan: "#94e2d5",
-            brightWhite: "#a6adc8"
         }
     });
 
@@ -62,6 +47,13 @@ if (isMobile) {
     fitAddon.fit();
 
     terminal.focus();
+
+    const savePanel = document.getElementById("save-panel");
+    const saveHeader = document.getElementById("save-panel-header");
+
+    saveHeader.addEventListener("click", () => {
+        savePanel.classList.toggle("collapsed");
+    })
 
     // WebSocket connection
 
