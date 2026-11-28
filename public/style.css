@@ -98,7 +98,6 @@ body {
     color: #cdd6f4;
     font-family: monospace;
     z-index: 999;
-    border: 1px solid #45475a;
     border-radius: 0px;
     overflow: hidden;
 }
@@ -111,14 +110,23 @@ body {
     background: #45475a;
 }
 
-#save-panel-content{
-    padding:12px;
+#save-panel-content {
+    padding: 12px;
+    display: block;
 }
 
 #save-panel.collapsed #save-panel-content {
-    transform.rotate(180deg);
+    display: none;
 }
 
+#save-panel-arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+#save-panel.collapsed #save-panel-arrow {
+    transform: rotate(180deg);
+}
 .save-section{
     display: flex;
     flex-direction: column;

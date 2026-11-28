@@ -147,8 +147,10 @@ else {
 
     // focusing
 
-    document.addEventListener("click", () => {
-        terminal.focus();
+    document.addEventListener("click", (event) => {
+        if (!savePanel.containts(event.target)){
+            terminal.focus();
+        }
     });
 
     // Browser resizing
