@@ -127,6 +127,40 @@ def save_game():
     with open("save.json", "w", encoding="utf-8") as file:
         json.dump(save, file, indent=4)
 
+def load_game():
+    global ai_name
+    global money
+    global daily_users
+    global processing_power
+    global daily_users_level
+    global processing_power_level
+    global daily_users_cost
+    global processing_power_cost
+    global message
+    
+    if os.path.exists("save.json"):
+        message = "Loading save..."
+        
+        with open("save.json", "r", encoding="utf-8") as file:
+            save = json.load(file)
+
+        with money_lock:
+            ai_name = save["ai_name"]
+            money = save["money"]
+            daily_users = save["daily_users"]
+            processing_power = save["processing_power"]
+            daily_users_level = save["daily_users_level"]
+            processing_power_level = save["processing_power_level"]
+            daily_users_cost = save["daily_users_cost"]
+            processing_power_cost = save["processing_power_cost"]
+
+        message = "Save loaded successfully!"
+        return True
+
+    else:
+        message = "No save found!"
+        return False
+
 
 # Interface
 def get_display():
@@ -215,7 +249,7 @@ def option_two(event):
     global current_screen, message
 
     if current_screen == "main":
-        message = "Loading saves is not implemented yet."
+        load_game()
     else:
         message = ""
         purchase_upgrade("users")
@@ -276,9 +310,11 @@ app = Application(
 
 
 # Starting the game
-ai_name = input(
-    "Welcome to GPT-Incremental! Enter your AI's name: "
-)[:20]
+if not load_game():
+    ai_name = input(
+        "Welcome to GPT-Incremental! Enter your AI's name: "
+    )[:20]
+
 
 money_thread = threading.Thread(
     target=money_update,
