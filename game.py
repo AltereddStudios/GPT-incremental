@@ -29,6 +29,7 @@ ai_name = "My AI"
 
 running = True
 money_lock = threading.Lock()
+save_lock = threading.Lock()
 
 current_screen = "main"
 message = ""
@@ -122,10 +123,22 @@ def get_save_data():
 
 
 def save_game():
-    save = get_save_data()
+    save_path = "save.json"
+    temp_path = "save.json.tmp"
 
-    with open("save.json", "w", encoding="utf-8") as file:
-        json.dump(save, file, indent=4)
+    try:
+        with save_lock:
+            save = get_save_data()
+
+            with open("save.json", "w", encoding="utf-8") as file:
+                json.dump(save, file, indent=4)
+
+            os.replace(temp_path, save_path)
+
+        return True
+
+    except (OSError, TypeError, ValueError):
+        return False
 
 def load_game():
     global ai_name
@@ -137,29 +150,44 @@ def load_game():
     global daily_users_cost
     global processing_power_cost
     global message
-    
-    if os.path.exists("save.json"):
-        message = "Loading save..."
-        
-        with open("save.json", "r", encoding="utf-8") as file:
-            save = json.load(file)
 
-        with money_lock:
-            ai_name = save["ai_name"]
-            money = save["money"]
-            daily_users = save["daily_users"]
-            processing_power = save["processing_power"]
-            daily_users_level = save["daily_users_level"]
-            processing_power_level = save["processing_power_level"]
-            daily_users_cost = save["daily_users_cost"]
-            processing_power_cost = save["processing_power_cost"]
+    try:
+        with save_lock:
+            with open("save.json", "r", encoding="utf-8") as file:
+                save = json.load(file)
+
+            with money_lock:
+                ai_name = save["ai_name"]
+                money = save["money"]
+                daily_users = save["daily_users"]
+                processing_power = save["processing_power"]
+                daily_users_level = save["daily_users_level"]
+                processing_power_level = save["processing_power_level"]
+                daily_users_cost = save["daily_users_cost"]
+                processing_power_cost = save["processing_power_cost"]
 
         message = "Save loaded successfully!"
         return True
 
-    else:
+    except FileNotFoundError:
         message = "No save found!"
         return False
+
+    except (json.JSONDecodeError, KeyError,TypeError, ValueError, OSError):
+        message = "Save file is invalid or could not be read!"
+        return False
+
+def autosave():
+    global message
+
+    while running:
+        time.sleep(10)
+
+        if not running:
+            break
+
+        if not save_game():
+            app.invalidate()
 
 
 # Interface
@@ -316,12 +344,11 @@ if not load_game():
     )[:20]
 
 
-money_thread = threading.Thread(
-    target=money_update,
-    daemon=True
-)
-
+money_thread = threading.Thread(target=money_update, daemon=True)
 money_thread.start()
+
+autosave_thread = threading.Thread(target=autosave, daemon = True)
+autosave_thread.start()
 
 try:
     app.run()
@@ -329,7 +356,9 @@ try:
 finally:
     running = False
     money_thread.join()
+    autosave_thread.join()
 
-save_game()
-
-print("\nGame saved!")
+if save_game():
+    print("\nGame saved successfully!")
+else:
+    print("\nCould not save game!")
