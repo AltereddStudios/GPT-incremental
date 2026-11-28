@@ -1,0 +1,6 @@
+save.json
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+

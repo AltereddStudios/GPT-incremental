@@ -39,7 +39,7 @@ message = ""
 def money_update():
     global money
 
-    interval = 0.1
+    interval = 0.08
     next_update = time.monotonic() + interval
 
     while running:
@@ -130,7 +130,7 @@ def save_game():
         with save_lock:
             save = get_save_data()
 
-            with open("save.json", "w", encoding="utf-8") as file:
+            with open(temp_path, "w", encoding="utf-8") as file:
                 json.dump(save, file, indent=4)
 
             os.replace(temp_path, save_path)
@@ -187,6 +187,7 @@ def autosave():
             break
 
         if not save_game():
+            message = "Autosave failed!"
             app.invalidate()
 
 
@@ -218,7 +219,7 @@ def get_display():
             ("", f"Daily users: {current_users}\n"),
             ("", f"Processing power: {current_power}\n\n"),
 
-            ("bold", "MAIN MENU\n"),
+            ("bold", "MENU\n"),
             ("", "1. Upgrades\n"),
             ("", "2. Load save\n"),
             ("", "5. Save and exit\n\n"),
