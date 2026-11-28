@@ -88,3 +88,44 @@ body {
 #mobile-message p {
     font-size: 16px;
 }
+
+#save-panel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 260px;
+    background: #313244;
+    color: #cdd6f4;
+    font-family: monospace;
+    z-index: 999;
+    border: 1px solid #45475a;
+    border-radius: 0px;
+    overflow: hidden;
+}
+
+#save-panel-header {
+    padding:12px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    background: #45475a;
+}
+
+#save-panel-content{
+    padding:12px;
+}
+
+#save-panel.collapsed #save-panel-content {
+    transform.rotate(180deg);
+}
+
+.save-section{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.save-section:last-child {
+    margin-bottom: 0;
+}
