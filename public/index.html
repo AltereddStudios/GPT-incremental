@@ -22,6 +22,27 @@
         <div id="terminal"></div>
     </main>
 
+    <div id="save-panel">
+        <div id=""save-panel-header">
+        <span>Save options</span>
+        <span id="save-panel-arrow">▲</span>
+        </div>
+
+        <div id="save-panel-content">
+            <div class="save-section">
+                <label>Your save code</label>
+                <div id="save-code">No save generated</div>
+                <button id="copy-save">Copy save code</button>
+            </div>
+
+            <div class="save-section">
+                <label>Load a save</label>
+                <input id="load-save-input" type="text" placeholder="Place save code...">
+                <button id="load-save">Load save</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@xterm/xterm/lib/xterm.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit/lib/addon-fit.js"></script>
     <script src="script.js"></script>
